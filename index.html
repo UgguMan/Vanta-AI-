@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <!-- Character Encoding & Viewport -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!-- SEO Meta Tags -->
+  <title>Vanta AI - AI Recipe Generator | Create Personalized Recipes</title>
+  <meta name="description" content="Transform your ingredients into Michelin-star worthy recipes with Vanta AI. AI-powered recipe generation with 50+ cuisines, nutrition tracking, and personalized meal planning.">
+  <meta name="keywords" content="AI recipe generator, recipe creator, meal planner, cooking assistant, personalized recipes, ingredient-based recipes">
+  <meta name="author" content="Vanta AI">
+  <meta name="robots" content="index, follow">
+
+  <!-- Open Graph Tags -->
+  <meta property="og:title" content="Vanta AI - AI Recipe Generator | Create Personalized Recipes">
+  <meta property="og:description" content="Transform your ingredients into Michelin-star worthy recipes with AI-powered recipe generation.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://vantaai.app">
+  <meta property="og:image" content="https://vantaai.app/og-image.png">
+  <meta property="og:site_name" content="Vanta AI">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Vanta AI - AI Recipe Generator">
+  <meta name="twitter:description" content="Transform your ingredients into Michelin-star worthy recipes with AI.">
+
+  <!-- Favicon (Chef Emoji SVG Data URI) -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👨‍🍳</text></svg>" type="image/svg+xml">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700;900&display=swap" rel="stylesheet">
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+  <!-- Google Sign-In Identity SDK -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- NAVIGATION BAR                                  -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <nav id="navbar" class="navbar" aria-label="Main navigation">
+    <div class="nav-container">
+      <!-- Logo -->
+      <a href="#" class="nav-logo" aria-label="Vanta AI Home">
+        <span class="logo-icon">🍳</span>
+        <span class="logo-text">Vanta<span class="logo-accent">AI</span></span>
+      </a>
+
+      <!-- Nav Links -->
+      <ul id="nav-links" class="nav-links" role="menubar">
+        <li role="none"><a href="#home" class="nav-link active" role="menuitem">Home</a></li>
+        <li role="none"><a href="#generator" class="nav-link" role="menuitem">Generate</a></li>
+        <li role="none"><a href="#favorites" class="nav-link" role="menuitem">Favorites</a></li>
+        <li role="none"><a href="#admin" id="nav-admin-link" class="nav-link" role="menuitem" hidden>Admin Panel</a></li>
+        <li role="none"><a href="#about" class="nav-link" role="menuitem">About</a></li>
+      </ul>
+
+      <!-- Nav Actions -->
+      <div class="nav-actions">
+        <!-- User Account / Sign In -->
+        <button id="auth-nav-btn" class="btn btn-sm btn--secondary" aria-label="User sign in">
+          <span class="auth-btn-icon">👤</span>
+          <span id="auth-btn-text">Sign In</span>
+        </button>
+
+        <!-- API Settings Button -->
+        <button id="settings-nav-btn" class="theme-toggle" aria-label="API Settings" title="API Settings">
+          <span class="settings-btn-icon">⚙️</span>
+        </button>
+
+        <!-- Theme Toggle -->
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark/light theme" title="Toggle theme">
+          <span class="theme-icon sun" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="5"></circle>
+              <line x1="12" y1="1" x2="12" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="23"></line>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              <line x1="1" y1="12" x2="3" y2="12"></line>
+              <line x1="21" y1="12" x2="23" y2="12"></line>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+          </span>
+          <span class="theme-icon moon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+          </span>
+        </button>
+
+        <!-- Mobile Hamburger Menu -->
+        <button id="mobile-menu-btn" class="mobile-menu-btn" aria-label="Open mobile menu" aria-expanded="false" aria-controls="nav-links">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- HERO SECTION                                    -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <section id="home" class="hero-section" aria-label="Welcome to ChefAI">
+    <!-- Floating Food Decorations -->
+    <div class="floating-decorations" aria-hidden="true">
+      <span class="floating-emoji float-1">🥑</span>
+      <span class="floating-emoji float-2">🍅</span>
+      <span class="floating-emoji float-3">🧄</span>
+      <span class="floating-emoji float-4">🌶️</span>
+      <span class="floating-emoji float-5">🍋</span>
+      <span class="floating-emoji float-6">🥕</span>
+      <span class="floating-emoji float-7">🫒</span>
+      <span class="floating-emoji float-8">🍊</span>
+    </div>
+
+    <div class="hero-content">
+      <h1 class="hero-title">
+        <span class="hero-title-line">Your AI-Powered</span>
+        <span class="hero-title-accent">Personal Chef</span>
+      </h1>
+      <p class="hero-subtitle">
+        Transform your ingredients into <strong>Michelin-star worthy recipes</strong> with the power of artificial intelligence
+      </p>
+      <a href="#generator" id="cta-button" class="cta-button" aria-label="Start generating recipes">
+        Start Cooking
+        <span class="cta-arrow" aria-hidden="true">→</span>
+      </a>
+    </div>
+
+    <!-- Stats Bar -->
+    <div class="hero-stats" aria-label="Platform statistics">
+      <div class="stat-item">
+        <span class="stat-icon" aria-hidden="true">🌍</span>
+        <span class="stat-number">50+</span>
+        <span class="stat-label">Cuisines</span>
+      </div>
+      <div class="stat-divider" aria-hidden="true"></div>
+      <div class="stat-item">
+        <span class="stat-icon" aria-hidden="true">📖</span>
+        <span class="stat-number">1000+</span>
+        <span class="stat-label">Recipes</span>
+      </div>
+      <div class="stat-divider" aria-hidden="true"></div>
+      <div class="stat-item">
+        <span class="stat-icon" aria-hidden="true">📊</span>
+        <span class="stat-number" aria-label="Nutrition Tracked">✓</span>
+        <span class="stat-label">Nutrition Tracked</span>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- RECIPE GENERATOR FORM SECTION                   -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <section id="generator" class="generator-section" aria-label="Recipe generator form">
+    <div class="section-container">
+      <!-- Section Header -->
+      <div class="section-header">
+        <span class="section-badge">✨ AI-Powered</span>
+        <h2 class="section-title">Create Your Recipe</h2>
+        <p class="section-subtitle">Tell us what you have and what you're craving — our AI chef does the rest</p>
+      </div>
+
+      <!-- Generator Form -->
+      <form id="recipe-form" class="recipe-form" aria-label="Recipe generation form" novalidate>
+        <div class="form-grid">
+
+          <!-- ─── LEFT COLUMN: Ingredients ─── -->
+          <div class="form-column form-column-left">
+            <div class="form-card">
+              <div class="form-card-header">
+                <h3 class="form-card-title">
+                  <span class="card-icon" aria-hidden="true">🥘</span>
+                  Your Ingredients
+                </h3>
+                <span class="form-card-subtitle">Add what you have on hand</span>
+              </div>
+
+              <!-- Ingredient Input -->
+              <div class="input-group">
+                <label for="ingredient-input" class="input-label">Ingredients</label>
+                <div class="tag-input-wrapper" id="ingredient-input-wrapper">
+                  <div id="ingredient-tags" class="tags-container" aria-label="Added ingredients" role="list"></div>
+                  <input
+                    type="text"
+                    id="ingredient-input"
+                    class="tag-input"
+                    placeholder="Type an ingredient and press Enter..."
+                    aria-label="Add ingredient"
+                    autocomplete="off"
+                  >
+                </div>
+              </div>
+
+              <!-- Quick-Add Ingredient Buttons -->
+              <div class="quick-add" aria-label="Quick add common ingredients">
+                <span class="quick-add-label">Quick add:</span>
+                <div class="quick-add-buttons" id="quick-add-ingredients">
+                  <button type="button" class="quick-add-btn" data-ingredient="chicken" aria-label="Add chicken">🍗 Chicken</button>
+                  <button type="button" class="quick-add-btn" data-ingredient="rice" aria-label="Add rice">🍚 Rice</button>
+                  <button type="button" class="quick-add-btn" data-ingredient="tomato" aria-label="Add tomato">🍅 Tomato</button>
+                  <button type="button" class="quick-add-btn" data-ingredient="onion" aria-label="Add onion">🧅 Onion</button>
+                  <button type="button" class="quick-add-btn" data-ingredient="garlic" aria-label="Add garlic">🧄 Garlic</button>
+                  <button type="button" class="quick-add-btn" data-ingredient="pasta" aria-label="Add pasta">🍝 Pasta</button>
+                  <button type="button" class="quick-add-btn" data-ingredient="eggs" aria-label="Add eggs">🥚 Eggs</button>
+                  <button type="button" class="quick-add-btn" data-ingredient="cheese" aria-label="Add cheese">🧀 Cheese</button>
+                  <button type="button" class="quick-add-btn" data-ingredient="potato" aria-label="Add potato">🥔 Potato</button>
+                  <button type="button" class="quick-add-btn" data-ingredient="bell pepper" aria-label="Add bell pepper">🫑 Bell Pepper</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ─── RIGHT COLUMN: Preferences ─── -->
+          <div class="form-column form-column-right">
+            <div class="form-card">
+              <div class="form-card-header">
+                <h3 class="form-card-title">
+                  <span class="card-icon" aria-hidden="true">⚙️</span>
+                  Preferences
+                </h3>
+                <span class="form-card-subtitle">Customize your recipe</span>
+              </div>
+
+              <!-- Cuisine Dropdown -->
+              <div class="input-group">
+                <label for="cuisine-select" class="input-label">Cuisine</label>
+                <div class="select-wrapper">
+                  <select id="cuisine-select" class="form-select" aria-label="Select cuisine type">
+                    <option value="">Select a cuisine...</option>
+                    <option value="indian">🇮🇳 Indian</option>
+                    <option value="italian">🇮🇹 Italian</option>
+                    <option value="mexican">🇲🇽 Mexican</option>
+                    <option value="chinese">🇨🇳 Chinese</option>
+                    <option value="japanese">🇯🇵 Japanese</option>
+                    <option value="thai">🇹🇭 Thai</option>
+                    <option value="mediterranean">🌊 Mediterranean</option>
+                    <option value="american">🇺🇸 American</option>
+                    <option value="french">🇫🇷 French</option>
+                    <option value="korean">🇰🇷 Korean</option>
+                    <option value="middle-eastern">🌍 Middle Eastern</option>
+                    <option value="surprise">🎲 Surprise Me</option>
+                  </select>
+                  <span class="select-arrow" aria-hidden="true">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                  </span>
+                </div>
+              </div>
+
+              <!-- Diet Preference Dropdown -->
+              <div class="input-group">
+                <label for="diet-select" class="input-label">Dietary Preference</label>
+                <div class="select-wrapper">
+                  <select id="diet-select" class="form-select" aria-label="Select dietary preference">
+                    <option value="">🍽️ No Preference</option>
+                    <option value="vegetarian">🥬 Vegetarian</option>
+                    <option value="vegan">🌱 Vegan</option>
+                    <option value="keto">🥩 Keto</option>
+                    <option value="paleo">🦴 Paleo</option>
+                    <option value="gluten-free">🌾 Gluten-Free</option>
+                    <option value="low-carb">📉 Low-Carb</option>
+                    <option value="pescatarian">🐟 Pescatarian</option>
+                  </select>
+                  <span class="select-arrow" aria-hidden="true">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                  </span>
+                </div>
+              </div>
+
+              <!-- Meal Type Selector -->
+              <div class="input-group">
+                <label class="input-label">Meal Type</label>
+                <div class="meal-type-selector" id="meal-type-selector" role="radiogroup" aria-label="Select meal type">
+                  <button type="button" class="meal-type-card" data-meal="breakfast" role="radio" aria-checked="false" aria-label="Breakfast">
+                    <span class="meal-icon" aria-hidden="true">☀️</span>
+                    <span class="meal-label">Breakfast</span>
+                  </button>
+                  <button type="button" class="meal-type-card" data-meal="lunch" role="radio" aria-checked="false" aria-label="Lunch">
+                    <span class="meal-icon" aria-hidden="true">🌤️</span>
+                    <span class="meal-label">Lunch</span>
+                  </button>
+                  <button type="button" class="meal-type-card" data-meal="dinner" role="radio" aria-checked="false" aria-label="Dinner">
+                    <span class="meal-icon" aria-hidden="true">🌙</span>
+                    <span class="meal-label">Dinner</span>
+                  </button>
+                  <button type="button" class="meal-type-card" data-meal="snack" role="radio" aria-checked="false" aria-label="Snack">
+                    <span class="meal-icon" aria-hidden="true">🍿</span>
+                    <span class="meal-label">Snack</span>
+                  </button>
+                  <button type="button" class="meal-type-card" data-meal="dessert" role="radio" aria-checked="false" aria-label="Dessert">
+                    <span class="meal-icon" aria-hidden="true">🍰</span>
+                    <span class="meal-label">Dessert</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Cooking Time Slider -->
+              <div class="input-group">
+                <label for="cooking-time" class="input-label">
+                  Cooking Time
+                  <span id="cooking-time-value" class="slider-value">45 min</span>
+                </label>
+                <div class="slider-wrapper">
+                  <input
+                    type="range"
+                    id="cooking-time"
+                    class="form-slider"
+                    min="15"
+                    max="120"
+                    value="45"
+                    step="5"
+                    aria-label="Cooking time in minutes"
+                    aria-valuemin="15"
+                    aria-valuemax="120"
+                    aria-valuenow="45"
+                  >
+                  <div class="slider-labels" aria-hidden="true">
+                    <span>15 min</span>
+                    <span>120 min</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Difficulty Selector -->
+              <div class="input-group">
+                <label class="input-label">Difficulty</label>
+                <div class="difficulty-selector" id="difficulty-selector" role="radiogroup" aria-label="Select difficulty level">
+                  <button type="button" class="difficulty-btn" data-difficulty="easy" role="radio" aria-checked="false" aria-label="Easy difficulty">
+                    <span class="difficulty-stars" aria-hidden="true">⭐</span>
+                    <span class="difficulty-label">Easy</span>
+                  </button>
+                  <button type="button" class="difficulty-btn active" data-difficulty="medium" role="radio" aria-checked="true" aria-label="Medium difficulty">
+                    <span class="difficulty-stars" aria-hidden="true">⭐⭐</span>
+                    <span class="difficulty-label">Medium</span>
+                  </button>
+                  <button type="button" class="difficulty-btn" data-difficulty="hard" role="radio" aria-checked="false" aria-label="Hard difficulty">
+                    <span class="difficulty-stars" aria-hidden="true">⭐⭐⭐</span>
+                    <span class="difficulty-label">Hard</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Servings Counter -->
+              <div class="input-group">
+                <label class="input-label">Servings</label>
+                <div class="servings-counter" aria-label="Number of servings">
+                  <button type="button" id="servings-decrease" class="servings-btn" aria-label="Decrease servings">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                  </button>
+                  <span id="servings-count" class="servings-number" aria-live="polite">2</span>
+                  <button type="button" id="servings-increase" class="servings-btn" aria-label="Increase servings">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ─── FULL WIDTH: Allergies, Instructions, Submit ─── -->
+        <div class="form-full-width">
+
+          <!-- Allergies -->
+          <div class="form-card">
+            <div class="input-group">
+              <label for="allergy-input" class="input-label">
+                <span class="label-icon" aria-hidden="true">⚠️</span>
+                Allergies & Restrictions
+              </label>
+              <div class="tag-input-wrapper" id="allergy-input-wrapper">
+                <div id="allergy-tags" class="tags-container" aria-label="Added allergies" role="list"></div>
+                <input
+                  type="text"
+                  id="allergy-input"
+                  class="tag-input"
+                  placeholder="Type an allergy and press Enter..."
+                  aria-label="Add allergy or restriction"
+                  autocomplete="off"
+                >
+              </div>
+            </div>
+            <div class="quick-add" aria-label="Quick add common allergies">
+              <span class="quick-add-label">Common:</span>
+              <div class="quick-add-buttons" id="quick-add-allergies">
+                <button type="button" class="quick-add-btn allergy-btn" data-allergy="nuts" aria-label="Add nuts allergy">🥜 Nuts</button>
+                <button type="button" class="quick-add-btn allergy-btn" data-allergy="dairy" aria-label="Add dairy allergy">🥛 Dairy</button>
+                <button type="button" class="quick-add-btn allergy-btn" data-allergy="gluten" aria-label="Add gluten allergy">🌾 Gluten</button>
+                <button type="button" class="quick-add-btn allergy-btn" data-allergy="eggs" aria-label="Add eggs allergy">🥚 Eggs</button>
+                <button type="button" class="quick-add-btn allergy-btn" data-allergy="soy" aria-label="Add soy allergy">🫘 Soy</button>
+                <button type="button" class="quick-add-btn allergy-btn" data-allergy="shellfish" aria-label="Add shellfish allergy">🦐 Shellfish</button>
+                <button type="button" class="quick-add-btn allergy-btn" data-allergy="fish" aria-label="Add fish allergy">🐟 Fish</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Additional Instructions -->
+          <div class="form-card">
+            <div class="input-group">
+              <label for="additional-instructions" class="input-label">
+                <span class="label-icon" aria-hidden="true">📝</span>
+                Additional Instructions
+              </label>
+              <textarea
+                id="additional-instructions"
+                class="form-textarea"
+                placeholder="Any specific requests? e.g., 'Make it spicy', 'Kid-friendly', 'Low sodium'..."
+                rows="3"
+                aria-label="Additional cooking instructions or preferences"
+              ></textarea>
+            </div>
+          </div>
+
+          <!-- Generate Button -->
+          <button type="submit" id="generate-btn" class="generate-btn" aria-label="Generate recipe with AI">
+            <span class="generate-btn-icon" aria-hidden="true">👨‍🍳</span>
+            <span class="generate-btn-text">Generate Recipe</span>
+            <span class="generate-btn-sparkle" aria-hidden="true">✨</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- LOADING OVERLAY                                 -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <div id="loading-overlay" class="loading-overlay" role="alert" aria-live="assertive" aria-hidden="true" hidden>
+    <div class="loading-content">
+      <!-- Animated Cooking Pot -->
+      <div class="loading-animation" aria-hidden="true">
+        <div class="cooking-pot">
+          <span class="pot-emoji">🍲</span>
+          <div class="steam steam-1"></div>
+          <div class="steam steam-2"></div>
+          <div class="steam steam-3"></div>
+        </div>
+      </div>
+      <h3 class="loading-title">Creating your perfect recipe<span class="loading-dots"><span>.</span><span>.</span><span>.</span></span></h3>
+      <p id="loading-tip" class="loading-tip">💡 Did you know? The average chef uses 30+ spices in their kitchen!</p>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- RECIPE OUTPUT SECTION                           -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <section id="recipe-output" class="recipe-output-section" aria-label="Generated recipe" hidden>
+    <div class="section-container">
+
+      <!-- Recipe Header -->
+      <div class="recipe-header">
+        <div class="recipe-header-badge">
+          <span aria-hidden="true">🎉</span> AI-Generated Recipe
+        </div>
+        <h2 id="recipe-name" class="recipe-name">Recipe Name</h2>
+        <div id="recipe-alt-names" class="recipe-alt-names" aria-label="Alternative names"></div>
+        <p id="recipe-description" class="recipe-description">Recipe description will appear here.</p>
+      </div>
+
+      <!-- Time Cards -->
+      <div class="time-cards" aria-label="Cooking times">
+        <div class="time-card">
+          <span class="time-card-icon" aria-hidden="true">🔪</span>
+          <span class="time-card-label">Prep Time</span>
+          <span id="prep-time" class="time-card-value">15 min</span>
+        </div>
+        <div class="time-card">
+          <span class="time-card-icon" aria-hidden="true">🔥</span>
+          <span class="time-card-label">Cook Time</span>
+          <span id="cook-time" class="time-card-value">30 min</span>
+        </div>
+        <div class="time-card">
+          <span class="time-card-icon" aria-hidden="true">⏱️</span>
+          <span class="time-card-label">Total Time</span>
+          <span id="total-time" class="time-card-value">45 min</span>
+        </div>
+      </div>
+
+      <!-- Info Badges -->
+      <div class="info-badges" aria-label="Recipe information">
+        <span id="badge-difficulty" class="info-badge badge-difficulty">
+          <span aria-hidden="true">⭐</span> Medium
+        </span>
+        <span id="badge-cuisine" class="info-badge badge-cuisine">
+          <span aria-hidden="true">🌍</span> Italian
+        </span>
+        <span id="badge-meal" class="info-badge badge-meal">
+          <span aria-hidden="true">🌙</span> Dinner
+        </span>
+        <span id="badge-diet" class="info-badge badge-diet">
+          <span aria-hidden="true">🍽️</span> No Preference
+        </span>
+      </div>
+
+      <!-- Nutrition Dashboard -->
+      <div class="nutrition-dashboard" aria-label="Nutritional information">
+        <h3 class="subsection-title">📊 Nutrition per Serving</h3>
+        <div class="nutrition-cards">
+          <div class="nutrition-card nutrition-calories">
+            <div class="nutrition-circle" id="calories-circle" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+              <svg viewBox="0 0 100 100">
+                <circle class="nutrition-circle-bg" cx="50" cy="50" r="42"></circle>
+                <circle class="nutrition-circle-fill" cx="50" cy="50" r="42" id="calories-fill"></circle>
+              </svg>
+              <span class="nutrition-circle-value" id="calories-value">0</span>
+            </div>
+            <span class="nutrition-label">Calories</span>
+            <span class="nutrition-unit">kcal</span>
+          </div>
+          <div class="nutrition-card nutrition-protein">
+            <div class="nutrition-circle" id="protein-circle" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+              <svg viewBox="0 0 100 100">
+                <circle class="nutrition-circle-bg" cx="50" cy="50" r="42"></circle>
+                <circle class="nutrition-circle-fill" cx="50" cy="50" r="42" id="protein-fill"></circle>
+              </svg>
+              <span class="nutrition-circle-value" id="protein-value">0</span>
+            </div>
+            <span class="nutrition-label">Protein</span>
+            <span class="nutrition-unit">g</span>
+          </div>
+          <div class="nutrition-card nutrition-carbs">
+            <div class="nutrition-circle" id="carbs-circle" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+              <svg viewBox="0 0 100 100">
+                <circle class="nutrition-circle-bg" cx="50" cy="50" r="42"></circle>
+                <circle class="nutrition-circle-fill" cx="50" cy="50" r="42" id="carbs-fill"></circle>
+              </svg>
+              <span class="nutrition-circle-value" id="carbs-value">0</span>
+            </div>
+            <span class="nutrition-label">Carbs</span>
+            <span class="nutrition-unit">g</span>
+          </div>
+          <div class="nutrition-card nutrition-fat">
+            <div class="nutrition-circle" id="fat-circle" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+              <svg viewBox="0 0 100 100">
+                <circle class="nutrition-circle-bg" cx="50" cy="50" r="42"></circle>
+                <circle class="nutrition-circle-fill" cx="50" cy="50" r="42" id="fat-fill"></circle>
+              </svg>
+              <span class="nutrition-circle-value" id="fat-value">0</span>
+            </div>
+            <span class="nutrition-label">Fat</span>
+            <span class="nutrition-unit">g</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="recipe-actions" aria-label="Recipe actions">
+        <button type="button" id="copy-recipe-btn" class="action-btn" aria-label="Copy recipe to clipboard" title="Copy Recipe">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+          <span>Copy</span>
+        </button>
+        <button type="button" id="print-recipe-btn" class="action-btn" aria-label="Print recipe" title="Print Recipe">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+          <span>Print</span>
+        </button>
+        <button type="button" id="share-recipe-btn" class="action-btn" aria-label="Share recipe" title="Share Recipe">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+          <span>Share</span>
+        </button>
+        <button type="button" id="save-favorite-btn" class="action-btn action-btn-favorite" aria-label="Save to favorites" title="Save to Favorites">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+          <span>Save to Favorites</span>
+        </button>
+      </div>
+
+      <!-- Ingredients Section -->
+      <div class="recipe-section" aria-label="Ingredients">
+        <h3 class="subsection-title">🛒 Ingredients</h3>
+        <ul id="recipe-ingredients" class="ingredient-list" aria-label="Ingredient checklist"></ul>
+      </div>
+
+      <!-- Equipment Section -->
+      <div class="recipe-section" aria-label="Equipment needed">
+        <h3 class="subsection-title">🍳 Equipment Needed</h3>
+        <ul id="recipe-equipment" class="equipment-list"></ul>
+      </div>
+
+      <!-- Step-by-Step Instructions -->
+      <div class="recipe-section" aria-label="Cooking instructions">
+        <h3 class="subsection-title">📋 Step-by-Step Instructions</h3>
+        <ol id="recipe-steps" class="steps-list"></ol>
+      </div>
+
+      <!-- Chef Tips -->
+      <div id="chef-tips-section" class="recipe-section tips-section" aria-label="Chef tips">
+        <h3 class="subsection-title">👨‍🍳 Chef's Tips</h3>
+        <div id="chef-tips" class="tips-container"></div>
+      </div>
+
+      <!-- Common Mistakes -->
+      <div id="mistakes-section" class="recipe-section mistakes-section" aria-label="Common mistakes to avoid">
+        <h3 class="subsection-title">⚠️ Common Mistakes to Avoid</h3>
+        <div id="common-mistakes" class="mistakes-container"></div>
+      </div>
+
+      <!-- Plating Suggestions -->
+      <div id="plating-section" class="recipe-section" aria-label="Plating suggestions">
+        <h3 class="subsection-title">🎨 Plating Suggestions</h3>
+        <p id="plating-suggestions" class="recipe-text"></p>
+      </div>
+
+      <!-- Serving Suggestions -->
+      <div id="serving-section" class="recipe-section" aria-label="Serving suggestions">
+        <h3 class="subsection-title">🍽️ Serving Suggestions</h3>
+        <p id="serving-suggestions" class="recipe-text"></p>
+      </div>
+
+      <!-- Storage Instructions -->
+      <div id="storage-section" class="recipe-section" aria-label="Storage instructions">
+        <h3 class="subsection-title">🗄️ Storage Instructions</h3>
+        <p id="storage-instructions" class="recipe-text"></p>
+      </div>
+
+      <!-- Cost & Health Score -->
+      <div class="recipe-meta-cards" aria-label="Cost and health information">
+        <div class="meta-card" id="cost-card">
+          <span class="meta-card-icon" aria-hidden="true">💰</span>
+          <span class="meta-card-label">Estimated Cost</span>
+          <span id="estimated-cost" class="meta-card-value">$12.50</span>
+        </div>
+        <div class="meta-card" id="health-card">
+          <span class="meta-card-icon" aria-hidden="true">💚</span>
+          <span class="meta-card-label">Health Score</span>
+          <span id="health-score" class="meta-card-value">8.5/10</span>
+        </div>
+      </div>
+
+      <!-- Nutritional Benefits -->
+      <div id="benefits-section" class="recipe-section" aria-label="Nutritional benefits">
+        <h3 class="subsection-title">🌿 Nutritional Benefits</h3>
+        <ul id="nutritional-benefits" class="benefits-list"></ul>
+      </div>
+
+      <!-- Substitutions Table -->
+      <div id="substitutions-section" class="recipe-section" aria-label="Ingredient substitutions">
+        <h3 class="subsection-title">🔄 Substitutions</h3>
+        <div class="table-wrapper">
+          <table id="substitutions-table" class="substitutions-table" aria-label="Ingredient substitution options">
+            <thead>
+              <tr>
+                <th scope="col">Original</th>
+                <th scope="col">Substitute</th>
+                <th scope="col">Notes</th>
+              </tr>
+            </thead>
+            <tbody id="substitutions-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Fun Fact -->
+      <div id="fun-fact-section" class="recipe-section fun-fact-section" aria-label="Fun food fact">
+        <div class="fun-fact-card">
+          <span class="fun-fact-icon" aria-hidden="true">🤓</span>
+          <h4 class="fun-fact-title">Fun Fact</h4>
+          <p id="fun-fact" class="fun-fact-text">A fun fact about this dish will appear here!</p>
+        </div>
+      </div>
+
+      <!-- Generate Another -->
+      <div class="generate-another-wrapper">
+        <button type="button" id="generate-another-btn" class="generate-btn generate-another-btn" aria-label="Generate another recipe">
+          <span class="generate-btn-icon" aria-hidden="true">🔄</span>
+          <span class="generate-btn-text">Generate Another</span>
+          <span class="generate-btn-sparkle" aria-hidden="true">✨</span>
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- FAVORITES SECTION                               -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <section id="favorites" class="favorites-section" aria-label="Favorite recipes">
+    <div class="section-container">
+      <div class="section-header">
+        <span class="section-badge">❤️ Saved</span>
+        <h2 class="section-title">Your Favorites</h2>
+        <p class="section-subtitle">Your saved recipes, always at your fingertips</p>
+      </div>
+
+      <!-- Favorites Grid -->
+      <div id="favorites-grid" class="favorites-grid" aria-label="Saved recipes grid"></div>
+
+      <!-- Empty State -->
+      <div id="favorites-empty" class="favorites-empty" aria-label="No favorites saved">
+        <div class="empty-state-icon" aria-hidden="true">
+          <span>💔</span>
+        </div>
+        <h3 class="empty-state-title">No favorites yet!</h3>
+        <p class="empty-state-text">Generate a recipe and save it to start building your collection.</p>
+        <a href="#generator" class="empty-state-cta">Create a Recipe →</a>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- ADMIN PANEL SECTION                             -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <section id="admin" class="site-section glass-panel" style="margin-top: 40px;" hidden>
+    <div class="section-container">
+      <div class="section-header">
+        <span class="section-badge">🛡️ Admin Control</span>
+        <h2 class="section-title">Admin Control Panel</h2>
+        <p class="section-subtitle">Monitor users, view bookmark statistics, and manage data.</p>
+      </div>
+      
+      <!-- Admin Stats Grid -->
+      <div class="admin-stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 32px;">
+        <div class="admin-stat-card glass-panel" style="display: flex; align-items: center; gap: 16px; padding: 20px;">
+          <span class="admin-stat-icon" style="font-size: 2.2rem;">👥</span>
+          <div class="admin-stat-info">
+            <span class="admin-stat-label" style="font-size: 0.75rem; color: var(--text-muted); display: block; text-transform: uppercase; font-weight: 600;">Total Users</span>
+            <span id="admin-stat-users" class="admin-stat-value" style="font-size: 1.6rem; font-weight: 700; color: var(--text-primary);">0</span>
+          </div>
+        </div>
+        <div class="admin-stat-card glass-panel" style="display: flex; align-items: center; gap: 16px; padding: 20px;">
+          <span class="admin-stat-icon" style="font-size: 2.2rem;">⭐</span>
+          <div class="admin-stat-info">
+            <span class="admin-stat-label" style="font-size: 0.75rem; color: var(--text-muted); display: block; text-transform: uppercase; font-weight: 600;">Total Bookmarks</span>
+            <span id="admin-stat-favorites" class="admin-stat-value" style="font-size: 1.6rem; font-weight: 700; color: var(--text-primary);">0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Users Table Wrapper -->
+      <div class="admin-table-wrapper table-wrapper">
+        <h3 class="section-title" style="font-size: 1.2rem; margin-bottom: 16px;">User Accounts Management</h3>
+        <table class="substitutions-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Username</th>
+              <th>Email</th>
+              <th>Auth Type</th>
+              <th>Role</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="admin-users-table-body">
+            <!-- Dynamically generated entries -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+  <section id="about" class="about-section" aria-label="About Vanta AI">
+    <div class="section-container">
+      <div class="section-header">
+        <span class="section-badge">🤖 About</span>
+        <h2 class="section-title">Meet Vanta AI</h2>
+        <p class="section-subtitle">
+          Vanta AI uses advanced artificial intelligence to create personalized, 
+          restaurant-quality recipes from whatever ingredients you have on hand. 
+          Whether you're a beginner or a seasoned cook, we craft the perfect recipe just for you.
+        </p>
+      </div>
+
+      <!-- Features Grid -->
+      <div class="features-grid" aria-label="Key features">
+        <article class="feature-card">
+          <div class="feature-icon" aria-hidden="true">🧠</div>
+          <h3 class="feature-title">AI-Powered</h3>
+          <p class="feature-description">
+            Powered by cutting-edge AI to create unique, personalized recipes tailored to your taste and dietary needs.
+          </p>
+        </article>
+        <article class="feature-card">
+          <div class="feature-icon" aria-hidden="true">🌍</div>
+          <h3 class="feature-title">50+ Cuisines</h3>
+          <p class="feature-description">
+            Explore flavors from around the world — from Italian pasta to Japanese ramen and everything in between.
+          </p>
+        </article>
+        <article class="feature-card">
+          <div class="feature-icon" aria-hidden="true">📊</div>
+          <h3 class="feature-title">Nutrition Tracking</h3>
+          <p class="feature-description">
+            Every recipe comes with detailed nutritional breakdowns including calories, macros, and health scores.
+          </p>
+        </article>
+        <article class="feature-card">
+          <div class="feature-icon" aria-hidden="true">⚡</div>
+          <h3 class="feature-title">Instant Generation</h3>
+          <p class="feature-description">
+            Get complete, chef-quality recipes in seconds — no more browsing endless food blogs for the right one.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- FOOTER                                          -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="footer-container">
+      <div class="footer-content">
+        <!-- Footer Logo -->
+        <div class="footer-brand">
+          <a href="#" class="footer-logo" aria-label="Vanta AI Home">
+            <span class="logo-icon">🍳</span>
+            <span class="logo-text">Vanta<span class="logo-accent">AI</span></span>
+          </a>
+          <p class="footer-tagline">Vanta AI - Your AI-powered personal chef, transforming ingredients into culinary masterpieces.</p>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="footer-links">
+          <h4 class="footer-links-title">Quick Links</h4>
+          <ul class="footer-link-list">
+            <li><a href="#home" class="footer-link">Home</a></li>
+            <li><a href="#generator" class="footer-link">Generate Recipe</a></li>
+            <li><a href="#favorites" class="footer-link">Favorites</a></li>
+            <li><a href="#about" class="footer-link">About</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Footer Bottom -->
+      <div class="footer-bottom">
+        <p class="footer-made-with">Made with <span aria-label="love">❤️</span> and AI</p>
+        <p class="footer-copyright">&copy; 2026 Vanta AI. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- AUTHENTICATION MODAL (Login / Signup)           -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <div id="auth-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="auth-modal-title" hidden>
+    <div class="modal auth-modal">
+      <div class="modal__header">
+        <h3 id="auth-modal-title" class="modal__title">Sign In to Vanta AI</h3>
+        <button id="auth-modal-close" class="modal__close" aria-label="Close modal">&times;</button>
+      </div>
+      <div class="modal__body">
+        <!-- Tab selector -->
+        <div class="auth-tabs" role="tablist">
+          <button id="tab-login" class="auth-tab active" role="tab" aria-selected="true" aria-controls="form-login">Sign In</button>
+          <button id="tab-signup" class="auth-tab" role="tab" aria-selected="false" aria-controls="form-signup">Register</button>
+        </div>
+
+        <!-- Login Form -->
+        <form id="form-login" class="auth-form" aria-label="Sign in form">
+          <div class="input-group">
+            <label for="login-username" class="input-label">Username</label>
+            <input type="text" id="login-username" class="form-select" placeholder="Enter username" required autocomplete="username">
+          </div>
+          <div class="input-group">
+            <label for="login-password" class="input-label">Password</label>
+            <input type="password" id="login-password" class="form-select" placeholder="Enter password" required autocomplete="current-password">
+          </div>
+          <button type="submit" class="generate-btn auth-submit-btn" style="margin-top: 16px; padding: 12px 24px; font-size: 1rem;">Sign In</button>
+        </form>
+
+        <!-- Signup Form (hidden by default) -->
+        <form id="form-signup" class="auth-form" aria-label="Registration form" style="display: none;">
+          <div class="input-group">
+            <label for="signup-username" class="input-label">Username</label>
+            <input type="text" id="signup-username" class="form-select" placeholder="Choose a username" required autocomplete="username">
+          </div>
+          <div class="input-group">
+            <label for="signup-password" class="input-label">Password</label>
+            <input type="password" id="signup-password" class="form-select" placeholder="Create a password" required autocomplete="new-password">
+          </div>
+          <div class="input-group">
+            <label for="signup-password-confirm" class="input-label">Confirm Password</label>
+            <input type="password" id="signup-password-confirm" class="form-select" placeholder="Repeat your password" required autocomplete="new-password">
+          </div>
+          <button type="submit" class="generate-btn auth-submit-btn" style="margin-top: 16px; padding: 12px 24px; font-size: 1rem;">Create Account</button>
+        </form>
+        <!-- Google Sign-In Container -->
+        <div class="auth-divider" style="text-align: center; margin: 20px 0; color: var(--text-muted); font-size: 0.8rem; position: relative;">
+          <span style="background: var(--bg-secondary); padding: 0 10px; position: relative; z-index: 1;">OR</span>
+          <div style="position: absolute; top: 50%; left: 0; right: 0; height: 1px; background: var(--glass-border); z-index: 0;"></div>
+        </div>
+        <div id="google-signin-wrapper" class="google-signin-wrapper" style="display: flex; justify-content: center; width: 100%; margin-top: 8px;">
+          <div id="google-signin-btn"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- API SETTINGS MODAL                              -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <div id="settings-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="settings-modal-title" hidden>
+    <div class="modal auth-modal">
+      <div class="modal__header">
+        <h3 id="settings-modal-title" class="modal__title">API Settings</h3>
+        <button id="settings-modal-close" class="modal__close" aria-label="Close modal">&times;</button>
+      </div>
+      <div class="modal__body">
+        <form id="form-settings" class="auth-form" aria-label="API Key configuration">
+          <div class="input-group">
+            <label for="gemini-api-key" class="input-label">Gemini API Key</label>
+            <input type="password" id="gemini-api-key" class="form-select" placeholder="Enter your Gemini API key...">
+            <span class="form-card-subtitle" style="margin-top: 4px; display: block; line-height: 1.4;">Your key is saved locally in your browser. Leave blank if the server has a system variable key set.</span>
+          </div>
+          <button type="submit" class="generate-btn auth-submit-btn" style="margin-top: 12px; padding: 12px 24px; font-size: 1rem;">Save API Settings</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- TOAST NOTIFICATION CONTAINER                    -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true" role="status"></div>
+
+
+  <!-- Application Script -->
+  <script src="app.js"></script>
+</body>
+</html>
