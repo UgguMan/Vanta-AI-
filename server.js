@@ -1,6 +1,4 @@
 require('dotenv').config();
-const dns = require('dns');
-dns.setDefaultResultOrder('ipv4first');
 const express = require('express');
 const { MongoClient, ObjectId } = require('mongodb');
 const { OAuth2Client } = require('google-auth-library');
@@ -22,24 +20,47 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname)));
 
 // MongoDB Connection Configuration
+// Uses connection caching for Vercel serverless (reuse across warm invocations)
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/chefai';
 let db;
+let mongoClient;
 
-MongoClient.connect(MONGODB_URI)
-  .then((client) => {
-    console.log('Connected to MongoDB database successfully.');
-    db = client.db();
-    
-    // Create unique indices for schemas
-    db.collection('users').createIndex({ username: 1 }, { unique: true });
-    db.collection('favorites').createIndex({ userId: 1, recipeId: 1 }, { unique: true });
-    
-    // Seed Admin User
-    seedAdminAccount();
-  })
+// Cached connection for serverless environments
+let cachedClient = null;
+let cachedDb = null;
+
+async function connectToDatabase() {
+  if (cachedClient && cachedDb) {
+    return { client: cachedClient, db: cachedDb };
+  }
+
+  const client = new MongoClient(MONGODB_URI, {
+    serverSelectionTimeoutMS: 10000,
+    connectTimeoutMS: 10000,
+    socketTimeoutMS: 20000,
+  });
+
+  await client.connect();
+  const database = client.db();
+
+  cachedClient = client;
+  cachedDb = database;
+  db = database;
+
+  console.log('Connected to MongoDB database successfully.');
+
+  // Create unique indices for schemas
+  await database.collection('users').createIndex({ username: 1 }, { unique: true });
+  await database.collection('favorites').createIndex({ userId: 1, recipeId: 1 }, { unique: true });
+
+  return { client, db: database };
+}
+
+// Connect on startup (non-blocking, best-effort)
+connectToDatabase()
+  .then(() => seedAdminAccount())
   .catch((err) => {
-    console.error('MongoDB connection error:', err.message);
-    console.log('WARNING: The server is running, but database operations will fail until MongoDB is connected.');
+    console.error('MongoDB startup connection error:', err.message);
   });
 
 async function seedAdminAccount() {
@@ -66,9 +87,14 @@ async function seedAdminAccount() {
 }
 
 // Database check helper middleware
-const checkDbConnection = (req, res, next) => {
+const checkDbConnection = async (req, res, next) => {
   if (!db) {
-    return res.status(503).json({ error: 'Database connection is currently unavailable. Please verify MONGODB_URI is configured correctly.' });
+    try {
+      await connectToDatabase();
+    } catch (err) {
+      console.error('DB reconnect failed:', err.message);
+      return res.status(503).json({ error: 'Database connection is currently unavailable. Please verify MONGODB_URI is configured correctly.' });
+    }
   }
   next();
 };
