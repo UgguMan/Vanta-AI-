@@ -1974,4 +1974,22 @@ button {
   padding: 24px;
 }
 
+/* ── Auth Gate (Mandatory Login) ── */
+body.auth-locked {
+  overflow: hidden;
+}
 
+body.auth-locked > *:not(.modal-backdrop):not(.toast-container) {
+  filter: blur(8px);
+  pointer-events: none;
+  user-select: none;
+}
+
+body.auth-locked .modal-backdrop {
+  background: rgba(5, 12, 10, 0.92);
+}
+
+/* Hide close button when login is mandatory */
+body.auth-locked .modal__close {
+  display: none;
+}

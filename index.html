@@ -69,10 +69,7 @@
           <span id="auth-btn-text">Sign In</span>
         </button>
 
-        <!-- API Settings Button -->
-        <button id="settings-nav-btn" class="theme-toggle" aria-label="API Settings" title="API Settings">
-          <span class="settings-btn-icon">⚙️</span>
-        </button>
+
 
         <!-- Theme Toggle -->
         <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark/light theme" title="Toggle theme">
@@ -899,27 +896,7 @@
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════════════ -->
-  <!-- API SETTINGS MODAL                              -->
-  <!-- ═══════════════════════════════════════════════ -->
-  <div id="settings-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="settings-modal-title" hidden>
-    <div class="modal auth-modal">
-      <div class="modal__header">
-        <h3 id="settings-modal-title" class="modal__title">API Settings</h3>
-        <button id="settings-modal-close" class="modal__close" aria-label="Close modal">&times;</button>
-      </div>
-      <div class="modal__body">
-        <form id="form-settings" class="auth-form" aria-label="API Key configuration">
-          <div class="input-group">
-            <label for="gemini-api-key" class="input-label">Gemini API Key</label>
-            <input type="password" id="gemini-api-key" class="form-select" placeholder="Enter your Gemini API key...">
-            <span class="form-card-subtitle" style="margin-top: 4px; display: block; line-height: 1.4;">Your key is saved locally in your browser. Leave blank if the server has a system variable key set.</span>
-          </div>
-          <button type="submit" class="generate-btn auth-submit-btn" style="margin-top: 12px; padding: 12px 24px; font-size: 1rem;">Save API Settings</button>
-        </form>
-      </div>
-    </div>
-  </div>
+
 
   <!-- ═══════════════════════════════════════════════ -->
   <!-- TOAST NOTIFICATION CONTAINER                    -->

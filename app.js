@@ -76,12 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const signupPasswordInput = document.getElementById('signup-password');
   const signupPasswordConfirmInput = document.getElementById('signup-password-confirm');
 
-  // API Settings Modal selectors
-  const settingsNavBtn = document.getElementById('settings-nav-btn');
-  const settingsModal = document.getElementById('settings-modal');
-  const settingsModalClose = document.getElementById('settings-modal-close');
-  const formSettings = document.getElementById('form-settings');
-  const geminiApiKeyInput = document.getElementById('gemini-api-key');
+
 
   // Admin Dashboard selectors
   const navAdminLink = document.getElementById('nav-admin-link');
@@ -786,15 +781,12 @@ document.addEventListener('DOMContentLoaded', () => {
       loadingTip.textContent = tips[tipIndex];
     }, 2000);
 
-    const userKey = localStorage.getItem('gemini_api_key') || '';
-    const extraInstructions = additionalInstructions.value;
 
     try {
       const response = await fetch('/api/generate', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'X-Gemini-API-Key': userKey
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           ingredients: state.ingredients,
@@ -805,7 +797,7 @@ document.addEventListener('DOMContentLoaded', () => {
           difficulty: state.difficulty,
           servings: state.servings,
           allergies: state.allergies,
-          extra: extraInstructions
+          extra: additionalInstructions.value
         })
       });
 
@@ -1156,18 +1148,20 @@ document.addEventListener('DOMContentLoaded', () => {
       logoutUser();
     } else {
       // Show Modal
-      authModal.removeAttribute('hidden');
-      authModal.setAttribute('aria-hidden', 'false');
+      showAuthGate();
     }
   });
 
   authModalClose.addEventListener('click', () => {
-    closeAuthModal();
+    // Only allow closing if user is logged in
+    if (state.token && state.user) {
+      closeAuthModal();
+    }
   });
 
-  // Close modal when clicking backdrop
+  // Close modal when clicking backdrop — only if logged in
   authModal.addEventListener('click', (e) => {
-    if (e.target === authModal) {
+    if (e.target === authModal && state.token && state.user) {
       closeAuthModal();
     }
   });
@@ -1175,53 +1169,19 @@ document.addEventListener('DOMContentLoaded', () => {
   function closeAuthModal() {
     authModal.setAttribute('hidden', 'true');
     authModal.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('auth-locked');
     formLogin.reset();
     formSignup.reset();
   }
 
-  // ==========================================
-  // API SETTINGS INTERACTION
-  // ==========================================
-  
-  // Load saved API key on init
-  geminiApiKeyInput.value = localStorage.getItem('gemini_api_key') || '';
-
-  // Show Settings Modal
-  settingsNavBtn.addEventListener('click', () => {
-    geminiApiKeyInput.value = localStorage.getItem('gemini_api_key') || '';
-    settingsModal.removeAttribute('hidden');
-    settingsModal.setAttribute('aria-hidden', 'false');
-  });
-
-  // Close Settings Modal
-  settingsModalClose.addEventListener('click', () => {
-    closeSettingsModal();
-  });
-
-  settingsModal.addEventListener('click', (e) => {
-    if (e.target === settingsModal) {
-      closeSettingsModal();
-    }
-  });
-
-  function closeSettingsModal() {
-    settingsModal.setAttribute('hidden', 'true');
-    settingsModal.setAttribute('aria-hidden', 'true');
+  // Show login gate — blocks the entire UI until user logs in
+  function showAuthGate() {
+    authModal.removeAttribute('hidden');
+    authModal.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('auth-locked');
   }
 
-  // Form Submit: Settings
-  formSettings.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const apiKey = geminiApiKeyInput.value.trim();
-    if (apiKey) {
-      localStorage.setItem('gemini_api_key', apiKey);
-      showToast('API Key saved successfully!', 'success');
-    } else {
-      localStorage.removeItem('gemini_api_key');
-      showToast('API Key removed. Server default key will be used if set.', 'info');
-    }
-    closeSettingsModal();
-  });
+
 
   // Switch between Sign In / Register tabs
   tabLogin.addEventListener('click', () => {
@@ -1333,6 +1293,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (activeGeneratedRecipe) {
       updateFavoriteBtnUI(activeGeneratedRecipe.id);
     }
+
+    // Force the login gate to reappear
+    showAuthGate();
   }
 
   // Update navbar layout for signed-in user
@@ -1379,7 +1342,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Check user session on load
   async function verifySession() {
-    if (!state.token) return;
+    if (!state.token) {
+      // No token — show login gate immediately
+      showAuthGate();
+      return;
+    }
 
     try {
       const response = await fetch('/api/auth/me', {
@@ -1401,6 +1368,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (err) {
       console.error('Session verification failed:', err);
       updateAuthUI();
+      showAuthGate();
     }
   }
 
@@ -1470,21 +1438,15 @@ document.addEventListener('DOMContentLoaded', () => {
           { theme: 'outline', size: 'large', width: '280' }
         );
       } else {
-        // Render custom styled simulator button for developers
+        // Render styled Google sign-in button
         googleBtn.innerHTML = `
           <button type="button" class="btn btn-outline" style="display:flex; align-items:center; gap:10px; padding:10px 24px; border:1px solid var(--glass-border-hover); border-radius:var(--radius-md); font-weight:600; width:280px; justify-content:center; background:rgba(255,255,255,0.05); cursor:pointer; color:var(--text-primary);">
             <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#EA4335" d="M12 5.04c1.66 0 3.2.57 4.38 1.69l3.27-3.27C17.67 1.48 15.02.75 12 .75 7.37.75 3.4 3.42 1.48 7.31l3.87 3C6.27 7.42 8.9 5.04 12 5.04z"/><path fill="#4285F4" d="M23.49 12.27c0-.81-.07-1.59-.2-2.35H12v4.51h6.48c-.29 1.48-1.14 2.73-2.42 3.57l3.77 2.92c2.2-2.03 3.66-5.02 3.66-8.65z"/><path fill="#FBBC05" d="M5.35 14.31c-.24-.72-.38-1.49-.38-2.31s.14-1.59.38-2.31L1.48 6.7C.54 8.59 0 10.74 0 13s.54 4.41 1.48 6.3l3.87-2.99z"/><path fill="#34A853" d="M12 23.25c3.24 0 5.97-1.07 7.96-2.92l-3.77-2.92c-1.04.7-2.38 1.12-4.19 1.12-3.1 0-5.73-2.38-6.65-5.27L1.48 16.3c1.92 3.89 5.89 6.95 10.52 6.95z"/></svg>
-            Sign In with Google (Demo)
+            Sign In with Google
           </button>
         `;
-        googleBtn.addEventListener('click', async () => {
-          const email = prompt("Enter your Gmail address to simulate Google login:", "chef@gmail.com");
-          if (!email || email.trim() === '') return;
-          const name = email.split('@')[0];
-          const googleId = "mock-" + btoa(email).substring(0, 12);
-          
-          const credential = JSON.stringify({ email, name, googleId });
-          window.handleGoogleCredentialResponse({ credential }, true);
+        googleBtn.querySelector('button').addEventListener('click', () => {
+          showToast('Google Sign-In is not configured. Please set up GOOGLE_CLIENT_ID in Vercel environment variables.', 'error');
         });
       }
     } catch (err) {
