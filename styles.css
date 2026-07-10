@@ -51,7 +51,7 @@
 
   /* Typography */
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-heading: 'Playfair Display', Georgia, serif;
+  --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 
   /* Spacing & Borders */
   --radius-sm: 6px;
